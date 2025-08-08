@@ -5,7 +5,7 @@ import { Head, Link, useForm} from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Customer Create',
+        title: 'Customer Edit',
         href: '/customers',
     },
 ];
@@ -25,7 +25,7 @@ const form = useForm({
 </script>
 
 <template>
-    <Head title="Customers Create" />
+    <Head title="Customers Edit" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="overflow-x-auto shadow-md sm:rounded-lg my-5 mx-5">
@@ -53,7 +53,7 @@ const form = useForm({
                     <p v-if="form.errors.address" class="text-red-500 text-sm mt-1"{{ form.errors.address }}></p>
                </div>
                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                    Create Customer
+                    Update Customer
                 </button>
             </form>
         </div>

@@ -15,6 +15,7 @@ const page = usePage();
         <SidebarGroupLabel>Menu</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
+                <!-- if (item.isAdmin && !page.props.auth.user?.roles.some(role => role.name === 'admin')) return; -->
                 <SidebarMenuButton as-child :is-active="item.href === page.url" :tooltip="item.title">
                     <Link :href="item.href">
                         <component :is="item.icon" />

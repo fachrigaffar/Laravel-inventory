@@ -4,9 +4,38 @@ import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { ArrowLeftRight, LayoutGrid, Users, ArrowRightLeft} from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { ArrowLeftRight, LayoutGrid, ArrowRightLeft, Contact, History} from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import { computed } from 'vue';
+
+// Get the authenticated user from Inertia's page props
+const page = usePage();
+const user = computed(() => page.props.auth?.user);
+
+// Check if user has admin role
+const isAdmin = computed(() => {
+    if (!user.value) return false;
+
+    // Check using Spatie's role names collection
+    if (user.value.roles && Array.isArray(user.value.roles)) {
+        return user.value.roles.includes('admin');
+    }
+
+    return false;
+});
+
+// Alternative: Check by permissions instead of roles
+const canManageSuppliers = computed(() => {
+    if (!user.value) return false;
+
+    if (user.value.permissions && Array.isArray(user.value.permissions)) {
+        return user.value.permissions.includes('manage suppliers') ||
+               user.value.permissions.includes('manage customers');
+    }
+
+    return false;
+});
 
 const mainNavItems: NavItem[] = [
     {
@@ -17,30 +46,45 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Suppliers',
         href: '/suppliers',
-        icon: Users,
+        icon: Contact,
+        isAdmin: true,
     },
     {
         title: 'Customers',
         href: '/customers',
-        icon: Users,
+        icon: Contact,
+        isAdmin: true,
     },
     {
         title: 'Transactions In',
-        href: '/income-transactions',
+        href: '/incoming-transactions',
         icon: ArrowLeftRight,
     },
     {
         title: 'Transactions Out',
         href: '/outgoing-transactions',
         icon: ArrowRightLeft,
-
-
     },
-
+    {
+        title: 'Transaction History',
+        href: '/transaction-history',
+        icon: History,
+    },
 ];
 
-const footerNavItems: NavItem[] = [
+const filteredMainNavItems = computed(() => {
+    return mainNavItems.filter(item => {
+        // If item requires admin role and user is not admin, hide it
+        if (item.isAdmin && !isAdmin.value) {
+            return false;
+        }
+        
+        return true;
+    });
+});
 
+const footerNavItems: NavItem[] = [
+    // Add footer items here if needed
 ];
 </script>
 
@@ -59,7 +103,7 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain :items="filteredMainNavItems" />
         </SidebarContent>
 
         <SidebarFooter>
