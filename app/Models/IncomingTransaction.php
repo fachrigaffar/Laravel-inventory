@@ -11,6 +11,7 @@ class IncomingTransaction extends Model
         'product_id',
         'quantity',
         'transaction_date',
+        'created_by',
     ];
 
     public function supplier()
@@ -21,5 +22,10 @@ class IncomingTransaction extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class);
     }
 }

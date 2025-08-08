@@ -8,6 +8,7 @@ use App\Models\OutgoingTransaction;
 use App\Models\Customer;
 use App\Models\Product;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class OutgoingTransactionController extends Controller
 {
@@ -53,7 +54,13 @@ class OutgoingTransactionController extends Controller
 
         $product->decrement('stock', $request->quantity);
 
-        OutgoingTransaction::create($request->only(['customer_id', 'product_id', 'quantity', 'transaction_date']));
+        OutgoingTransaction::create([
+            'customer_id' => $request->customer_id,
+            'product_id'=> $request->product_id,
+            'quantity' => $request->quantity,
+            'transaction_date' => $request->transaction_date,
+            'created_by' => Auth::user()->id,
+        ]);
 
         return to_route('outgoing-transactions.index')->with('success', 'Outgoing transaction created successfully.');
     }
@@ -90,6 +97,7 @@ class OutgoingTransactionController extends Controller
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
             'transaction_date' => 'required|date',
+            'created_by' => 'nullable',
         ]);
 
         $transaction = OutgoingTransaction::findOrFail($id);

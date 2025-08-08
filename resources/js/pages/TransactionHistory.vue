@@ -19,6 +19,7 @@ defineProps<{
         product_stock: number | null;
         quantity: number;
         transaction_date: string;
+        created_by;
     }>;
 }>();
 
@@ -41,6 +42,7 @@ defineProps<{
                         <th scope="col" class="px-6 py-3">Quantity</th>
                         <th scope="col" class="px-6 py-3">Stock</th>
                         <th scope="col" class="px-6 py-3">Transaction Date</th>
+                        <th scope="col" class="px-6 py-3">Created By</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,7 +66,10 @@ defineProps<{
                             {{ transaction.product_stock ?? 'N/A' }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ transaction.transaction_date }}
+                            {{ transaction.transaction_date}}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ transaction.created_by}}
                         </td>
                     </tr>
                 </tbody>

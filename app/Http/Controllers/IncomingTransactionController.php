@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use App\Models\IncomingTransaction;
 use App\Models\Supplier;
 use App\Models\Product;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class IncomingTransactionController extends Controller
 {
@@ -46,7 +48,13 @@ class IncomingTransactionController extends Controller
         $product = Product::findOrFail($request->product_id);
         $product->increment('stock', $request->quantity);
 
-        IncomingTransaction::create($request->only(['supplier_id', 'product_id', 'quantity', 'transaction_date']));
+        IncomingTransaction::create([
+            'supplier_id' => $request->supplier_id,
+            'product_id' => $request->product_id,
+            'quantity' => $request->quantity,
+            'transaction_date' => $request->transaction_date,
+            'created_by' => Auth::user()->id,
+        ]);
 
         return to_route('incoming-transactions.index')->with('success', 'Incoming transaction created successfully.');
     }
